@@ -191,10 +191,6 @@ const SelectionProvider = ({ children }) => {
         orgUnit,
         attributeCombo,
         attributeOptionCombo: attributeOptionCombo,
-        // attributeCombos: attributeComboState.attributeCombos,
-        // isEnabled: attributeComboState.isEnabled,
-        // attrComboLabel: attributeComboState.attrComboLabel,
-        // attrComboValue: attributeComboState.attrComboValue,
         openedSelect,
         dataSet,
         clearAll: () => {
@@ -203,7 +199,7 @@ const SelectionProvider = ({ children }) => {
                 payload: {
                     workflow: initialWorkflowValue(dataApprovalWorkflows),
                 },
-            }),
+            })
             setAttributeComboState({
                 attributeCombos: [],
                 isEnabled: false,

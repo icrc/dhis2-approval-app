@@ -23,14 +23,6 @@ const OrgUnitSelect = () => {
     } = useSelectionContext()
     const open = openedSelect === ORG_UNIT
     const value = orgUnit?.displayName
-    const requiredValuesMessage =
-        !workflow
-            ? i18n.t('Choose a workflow, a period and a category option combo first')
-            : !period
-                ? i18n.t('Choose a period and a category option combo first')
-                : !attributeOptionCombo
-                    ? i18n.t('Choose a category option combo first')
-                    : null
     const roots = organisationUnits.map(({ id }) => id)
     const onChange = ({ displayName, id, path }) => {
         selectOrgUnit({ displayName, id, path })
@@ -38,6 +30,20 @@ const OrgUnitSelect = () => {
     const selectedOrgUnitPath = orgUnit?.path ? [orgUnit.path] : undefined
     const initiallySelected =
         selectedOrgUnitPath || organisationUnits.map(({ path }) => path)
+
+
+    const getRequiredValuesMessage = () => {
+        if (!workflow?.id) {
+            return i18n.t('Choose a workflow, a period and a category option combo first')
+        }
+        if (!period) {
+            return i18n.t('Choose a period and a category option combo first')
+        }
+        if (!attributeOptionCombo) {
+            return i18n.t('Choose a category option combo first')
+        }
+        return null;
+    }
 
     return (
         <ContextSelect
@@ -49,7 +55,7 @@ const OrgUnitSelect = () => {
             disabled={!(workflow?.id && period?.id && attributeOptionCombo?.id)}
             onOpen={() => setOpenedSelect(ORG_UNIT)}
             onClose={() => setOpenedSelect('')}
-            requiredValuesMessage={requiredValuesMessage}
+            requiredValuesMessage={getRequiredValuesMessage()}
             popoverMaxWidth={400}
         >
             <div className={classes.popoverContainer}>

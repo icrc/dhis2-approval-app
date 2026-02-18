@@ -1,4 +1,4 @@
-import { useDataQuery } from '@dhis2/app-runtime'
+import { useConfig, useDataQuery } from '@dhis2/app-runtime'
 import i18n from '@dhis2/d2-i18n'
 import { NoticeBox, CircularLoader } from '@dhis2/ui'
 import PropTypes from 'prop-types'
@@ -41,6 +41,9 @@ const Display = ({ dataSetId }) => {
         orgUnit,
         attributeOptionCombo,
     })
+    const { systemInfo = {} } = useConfig()
+    const { calendar = 'gregory' } = systemInfo
+
     const selectedDataSet = dataSets.find(({ id }) => id === dataSetId)
     const periodIds = selectedDataSet
         ? getFixedPeriodsForTypeAndDateRange(
@@ -50,7 +53,12 @@ const Display = ({ dataSetId }) => {
           ).map(({ id }) => id)
         : []
     const categoryFilter = attributeOptionCombo
-        ? getDataSetReportFilter(metadata, attributeCombo, attributeOptionCombo)
+        ? getDataSetReportFilter(metadata, {
+              attributeCombo,
+              attributeOptionCombo,
+              period,
+              calendar,
+          })
         : ''
 
     const { called, fetching, data, error, refetch } = useDataQuery(query, {

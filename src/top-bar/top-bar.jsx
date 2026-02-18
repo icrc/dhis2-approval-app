@@ -10,10 +10,10 @@ const TopBar = () => (
     <>
         <WorkflowSelect />
         <PeriodSelect />
+        <AttributeComboSelect />
         <ApprovalStatusesProvider>
             <OrgUnitSelect />
         </ApprovalStatusesProvider>
-        <AttributeComboSelect />
         <ClearAllButton />
     </>
 )

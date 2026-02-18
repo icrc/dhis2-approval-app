@@ -20,7 +20,7 @@ export default function MultipleCategorySelect({
     const { metadata } = useAppContext()
 
     return (
-        <div className={css.inputs}>
+        <>
             {/* Categories Dropdown */}
             {categories.map(({ id, displayName, categoryOptionIds }) =>
                 categoryOptionIds.length === 0 ? (
@@ -62,7 +62,7 @@ export default function MultipleCategorySelect({
                     </div>
                 )
             )}
-        </div>
+        </>
     )
 }
 

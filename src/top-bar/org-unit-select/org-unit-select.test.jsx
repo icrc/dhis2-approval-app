@@ -56,12 +56,12 @@ beforeEach(() => {
 })
 
 describe('<OrgUnitSelect>', () => {
-    it('renders an OrganisationUnitTree in a ContextSelect', () => {
+    it('renders an OrganisationUnitTree in a ContextSelect if a workflow, a period and a attribute option combo have been set', () => {
         useSelectionContext.mockImplementation(() => ({
-            workflow: {},
-            period: {},
+            workflow: mockWorkflows[0],
+            period: { id: '20120402' },
             orgUnit: {},
-            attributeOptionCombo: {},
+            attributeOptionCombo: { id: '1234' },
             openedSelect: '',
             selectWorkflow: () => {},
             setOpenedSelect: () => {},
@@ -71,12 +71,10 @@ describe('<OrgUnitSelect>', () => {
         expect(wrapper.find(OrganisationUnitTree)).toHaveLength(1)
     })
 
-    it('is enabled if workflow and period have been set', () => {
+    it('is disabled if workflow, period and attribute option combo is not set', () => {
         useSelectionContext.mockImplementation(() => ({
-            workflow: mockWorkflows[0],
-            period: {
-                id: '20120402',
-            },
+            workflow: {},
+            period: {},
             orgUnit: {},
             attributeOptionCombo: {},
             openedSelect: '',
@@ -85,13 +83,28 @@ describe('<OrgUnitSelect>', () => {
         }))
         const wrapper = shallow(<OrgUnitSelect />)
 
-        expect(wrapper.find(ContextSelect).prop('disabled')).toBe(false)
+        expect(wrapper.find(ContextSelect).prop('disabled')).toBe(true)
     })
 
-    it('is disabled if workflow and period have not been set yet', () => {
+    it('is disabled if period and attribute option combo are not set', () => {
         useSelectionContext.mockImplementation(() => ({
-            workflow: {},
+            workflow: mockWorkflows[0],
             period: {},
+            orgUnit: {},
+            attributeOptionCombo: {},
+            openedSelect: '',
+            selectWorkflow: () => {},
+            setOpenedSelect: () => {},
+        }))
+        const wrapper = shallow(<OrgUnitSelect />)
+
+        expect(wrapper.find(ContextSelect).prop('disabled')).toBe(true)
+    })
+
+    it('is disabled if attribute option combo are not set', () => {
+        useSelectionContext.mockImplementation(() => ({
+            workflow: mockWorkflows[0],
+            period: { id: '20120402' },
             orgUnit: {},
             attributeOptionCombo: {},
             openedSelect: '',
@@ -110,7 +123,7 @@ describe('<OrgUnitSelect>', () => {
                 id: '20120402',
             },
             orgUnit: {},
-            attributeOptionCombo: {},
+            attributeOptionCombo: { id: '1234' },
             openedSelect: '',
             selectWorkflow: () => {},
             setOpenedSelect: () => {},
@@ -142,7 +155,7 @@ describe('<OrgUnitSelect>', () => {
         const placeholder = 'Choose an organisation unit'
 
         expect(wrapper.find(ContextSelect).prop('disabled')).toBe(true)
-        expect(wrapper.find(ContextSelect).prop('value')).toBe(undefined)
+        expect(wrapper.find(ContextSelect).prop('value')).toBe('')
         expect(wrapper.find(ContextSelect).prop('placeholder')).toBe(
             placeholder
         )
@@ -204,7 +217,7 @@ describe('<OrgUnitSelect>', () => {
                 id: '20120402',
             },
             orgUnit: {},
-            attributeOptionCombo: {},
+            attributeOptionCombo: { id: '1234' },
             openedSelect: '',
             selectWorkflow: () => {},
             setOpenedSelect,
@@ -309,7 +322,7 @@ describe('<OrgUnitSelect>', () => {
 
     it('displays the correct tooltip text when workflow and period have not been set yet', () => {
         useSelectionContext.mockImplementation(() => ({
-            workflow: {},
+            workflow: null,
             period: {},
             orgUnit: {},
             attributeOptionCombo: {},
@@ -328,20 +341,19 @@ describe('<OrgUnitSelect>', () => {
 
     it('displays the correct tooltip text when period has not been set yet', () => {
         useSelectionContext.mockImplementation(() => ({
-            workflow: {
-                id: 'i5m0JPw4DQi',
-            },
-            period: {},
-            orgUnit: {},
-            attributeOptionCombo: {},
+            workflow: { id: 'i5m0JPw4DQi' },
+            period: null,
+            orgUnit: null,
+            attributeOptionCombo: null,
             openedSelect: '',
-            selectWorkflow: () => {},
-            setOpenedSelect: () => {},
+            selectOrgUnit: jest.fn(),
+            setOpenedSelect: jest.fn(),
         }))
 
         const wrapper = shallow(<OrgUnitSelect />)
-        const tooltip = wrapper.find(ContextSelect).dive().find(Tooltip)
-
-        expect(tooltip.prop('content')).toBe('Choose a period first')
+        const contextSelect = wrapper.find(ContextSelect)
+        expect(contextSelect.props().requiredValuesMessage).toBe(
+            'Choose a period first'
+        )
     })
 })

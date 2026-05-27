@@ -13,7 +13,6 @@ const CAT_OPTION_COMBO = 'CAT_OPTION_COMBO'
 const AttributeComboSelect = () => {
     const {
         workflow,
-        orgUnit,
         period,
         openedSelect,
         setOpenedSelect,
@@ -22,20 +21,23 @@ const AttributeComboSelect = () => {
         attributeOptionCombo,
         selectAttributeOptionCombo,
         attributeCombos,
-        showAttributeSelect,
+        isVisible,
         attrComboValue,
     } = useSelectionContext()
 
     const { metadata } = useAppContext()
 
     const open = openedSelect === CAT_OPTION_COMBO
+
     const getMissingSelectionsMessage = () => {
+        if (!workflow) {
+            return i18n.t('Choose a workflow and period first')
+        }
+        if (workflow.dataSets?.length === 0) {
+            return i18n.t('No found attribute option combo')
+        }
         if (!period) {
             return i18n.t('Choose a period first')
-        }
-
-        if (!orgUnit) {
-            return i18n.t('Choose an organisation unit first')
         }
     }
 
@@ -49,25 +51,20 @@ const AttributeComboSelect = () => {
         selectAttributeCombo(catCombo)
     }
 
-    if (!workflow || Object.keys(workflow).length === 0) {
-        return null
-    }
-
     return (
         <>
-            {showAttributeSelect && (
+            {isVisible && (
                 <ContextSelect
                     dataTest="category-combo-context-select"
                     prefix={
                         attributeCombo?.displayName ||
-                        i18n.t('Category Option Combo')
+                        i18n.t('Attribute Option Combo')
                     }
                     placeholder={
                         attrComboValue ||
-                        i18n.t('Choose a category option combo')
+                        i18n.t('Choose a attribute option combo')
                     }
                     open={open}
-                    disabled={!(workflow?.id && period?.id && orgUnit?.id)}
                     onOpen={() => setOpenedSelect(CAT_OPTION_COMBO)}
                     onClose={() => setOpenedSelect('')}
                     requiredValuesMessage={getMissingSelectionsMessage()}
@@ -79,13 +76,13 @@ const AttributeComboSelect = () => {
                         style={{
                             height:
                                 attributeCombos?.length == 1
-                                    ? '250px'
-                                    : '330px',
+                                    ? '270px'
+                                    : '350px',
                         }}
                     >
                         {/* Only show Category Combo dropdown when there are more than one categoryCombo in the list */}
                         {attributeCombos?.length > 1 && (
-                            <div className={css.attributeComboSelect}>
+                            <div>
                                 <SingleSelect
                                     placeholder={i18n.t('Choose a combination')}
                                     selected={attributeCombo?.id}
@@ -105,15 +102,14 @@ const AttributeComboSelect = () => {
                         )}
 
                         {attributeCombo && !attributeCombo.isDefault && (
-                            <div className={css.categorySelectWrapper}>
-                                <CategorySelect
-                                    key={`catCombo_${workflow?.id}_${attributeCombo?.id}_${period?.id}_${orgUnit?.id}`}
-                                    categoryCombo={attributeCombo}
-                                    selected={attributeOptionCombo}
-                                    onChange={onChange}
-                                    onClose={() => setOpenedSelect('')}
-                                />
-                            </div>
+                            <CategorySelect
+                                key={`catCombo_${workflow?.id}_${period?.id}_${attributeCombo?.id}`}
+                                categoryCombo={attributeCombo}
+                                selected={attributeOptionCombo}
+                                period={period}
+                                onChange={onChange}
+                                onClose={() => setOpenedSelect('')}
+                            />
                         )}
                     </div>
                 </ContextSelect>

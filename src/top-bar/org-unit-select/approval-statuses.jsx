@@ -13,8 +13,8 @@ class ApprovalStatusesMap {
         this._map = map || new Map()
     }
 
-    _serialiseKey({ workflowId, periodId, orgUnitId }) {
-        return `${workflowId}-${periodId}-${orgUnitId}`
+    _serialiseKey({ workflowId, periodId, orgUnitId, aocId }) {
+        return `${workflowId}-${periodId}-${orgUnitId}-${aocId}`
     }
 
     set(key, status) {
@@ -51,16 +51,18 @@ const useFetchApprovalStatus = ({ updateApprovalStatuses }) => {
                     workflowId: query.workflowId,
                     periodId: query.periodId,
                     orgUnitIds: [query.orgUnitId],
+                    aocId: query.aocId,
                 })
             }
         })
         requestQueue.current = []
 
         batchedQueries.forEach(
-            async ({ workflowId, periodId, orgUnitIds, aocs }) => {
+            async ({ workflowId, periodId, orgUnitIds, aocId }) => {
                 updateApprovalStatuses({
                     periodId,
                     workflowId,
+                    aocId,
                     approvalStatusUpdates: orgUnitIds.reduce(
                         (statuses, orgUnitId) => {
                             statuses[orgUnitId] = APPROVAL_STATUSES.LOADING
@@ -79,7 +81,7 @@ const useFetchApprovalStatus = ({ updateApprovalStatuses }) => {
                                 wf: workflowId,
                                 pe: periodId,
                                 ou: orgUnitIds,
-                                aoc: aocs,
+                                aoc: aocId,
                             },
                         },
                     })
@@ -96,17 +98,19 @@ const useFetchApprovalStatus = ({ updateApprovalStatuses }) => {
                 updateApprovalStatuses({
                     periodId,
                     workflowId,
+                    aocId,
                     approvalStatusUpdates: updateObject,
                 })
             }
         )
     }, 10)
 
-    return ({ workflowId, periodId, orgUnitId }) => {
+    return ({ workflowId, periodId, orgUnitId, aocId }) => {
         requestQueue.current.push({
             periodId,
             workflowId,
             orgUnitId,
+            aocId,
         })
         fetchApprovalStatuses()
     }
@@ -119,6 +123,7 @@ export const ApprovalStatusesProvider = ({ children }) => {
     const updateApprovalStatuses = ({
         workflowId,
         periodId,
+        aocId,
         approvalStatusUpdates,
     }) => {
         setApprovalStatuses((approvalStatuses) => {
@@ -127,7 +132,7 @@ export const ApprovalStatusesProvider = ({ children }) => {
                 approvalStatusUpdates
             )) {
                 newApprovalStatuses.set(
-                    { workflowId, periodId, orgUnitId },
+                    { workflowId, periodId, orgUnitId, aocId },
                     status
                 )
             }
@@ -156,11 +161,12 @@ export const useApprovalStatus = () => {
         useApprovalStatusesContext()
 
     return {
-        getApprovalStatus: ({ workflowId, periodId, orgUnitId }) => {
+        getApprovalStatus: ({ workflowId, periodId, orgUnitId, aocId }) => {
             return approvalStatuses.get({
                 workflowId,
                 periodId,
                 orgUnitId,
+                aocId,
             })
         },
         fetchApprovalStatus,

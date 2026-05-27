@@ -22,7 +22,7 @@ module.exports = defineConfig({
         env: {
             dhis2DataTestPrefix: 'dhis2-approval',
             networkMode: 'live',
-            dhis2ApiVersion: '43',
+            dhis2ApiVersion: '44',
         },
     },
 })

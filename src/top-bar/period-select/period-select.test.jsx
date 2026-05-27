@@ -33,11 +33,13 @@ const mockWorkflows = [
         displayName: 'Workflow a',
         id: 'i5m0JPw4DQi',
         periodType: 'Monthly',
+        dataSets: [{ id: 'some-dataset-id-1' }],
     },
     {
         displayName: 'Workflow B',
         id: 'rIUL3hYOjJc',
         periodType: 'Yearly',
+        dataSets: [{ id: 'some-dataset-id-2' }],
     },
 ]
 
@@ -130,7 +132,7 @@ describe('<PeriodSelect>', () => {
         const placeholder = 'Choose a period'
 
         expect(wrapper.find(ContextSelect).prop('disabled')).toBe(true)
-        expect(wrapper.find(ContextSelect).prop('value')).toBe(undefined)
+        expect(wrapper.find(ContextSelect).prop('value')).toBe('')
         expect(wrapper.find(ContextSelect).prop('placeholder')).toBe(
             placeholder
         )

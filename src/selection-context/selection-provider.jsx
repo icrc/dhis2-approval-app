@@ -5,6 +5,7 @@ import { useAppContext } from '../app-context/index.js'
 import { pushStateToHistory } from '../navigation/index.js'
 import {
     getAttributeComboState,
+    handleSelectCatOptionCombo,
     handleSelectOrgUnit,
     handleSelectPeriod,
     handleSelectWorkflow,
@@ -37,6 +38,7 @@ const reducer = (state, { type, payload }) => {
                 workflow: payload.workflow,
                 period: null,
                 orgUnit: null,
+                attributeCombo: null,
                 attributeOptionCombo: null,
                 dataSet: null,
             }
@@ -47,12 +49,7 @@ const reducer = (state, { type, payload }) => {
         case ACTIONS.SELECT_ORG_UNIT:
             return handleSelectOrgUnit(state, payload)
         case ACTIONS.SELECT_ATTRIBUTE_COMBO:
-            return {
-                ...state,
-                attributeCombo: payload.attributeCombo,
-                attributeOptionCombo: null,
-                dataSet: null,
-            }
+            return handleSelectCatOptionCombo(state, payload)
         case ACTIONS.SELECT_CAT_OPTION_COMBO:
             return {
                 ...state,
@@ -100,32 +97,20 @@ const SelectionProvider = ({ children }) => {
 
     const [attributeComboState, setAttributeComboState] = useState({
         attributeCombos: [],
-        showAttributeSelect: true,
+        isVisible: false,
         attrComboValue: '',
     })
 
     const _attributeComboState = useMemo(() => {
-        if (!metadata || !workflow || !orgUnit || !period) {
-            return null
-        }
-
         return getAttributeComboState({
             metadata,
             workflow,
-            orgUnit,
             period,
             calendar,
             attributeCombo,
             attributeOptionCombo,
         })
-    }, [
-        workflow,
-        orgUnit,
-        period,
-        attributeCombo,
-        attributeOptionCombo,
-        metadata,
-    ])
+    }, [workflow, period, attributeCombo, attributeOptionCombo, metadata])
 
     useEffect(() => {
         const setStateFromQueryParams = () => {
@@ -164,7 +149,7 @@ const SelectionProvider = ({ children }) => {
     const updateAttributeComboState = (_attributeState) => {
         setAttributeComboState({
             attributeCombos: _attributeState.attributeCombos,
-            showAttributeSelect: _attributeState.showAttributeSelect,
+            isVisible: _attributeState.isVisible,
             attrComboValue: _attributeState.attrComboValue,
         })
     }
@@ -190,23 +175,27 @@ const SelectionProvider = ({ children }) => {
         }
     }
     const providerValue = {
+        ...attributeComboState,
         workflow,
         period,
         orgUnit,
         attributeCombo,
         attributeOptionCombo: attributeOptionCombo,
-        attributeCombos: attributeComboState.attributeCombos,
-        showAttributeSelect: attributeComboState.showAttributeSelect,
-        attrComboValue: attributeComboState.attrComboValue,
         openedSelect,
         dataSet,
-        clearAll: () =>
+        clearAll: () => {
             dispatch({
                 type: ACTIONS.CLEAR_ALL,
                 payload: {
                     workflow: initialWorkflowValue(dataApprovalWorkflows),
                 },
-            }),
+            })
+            setAttributeComboState({
+                attributeCombos: [],
+                isVisible: false,
+                attrComboValue: '',
+            })
+        },
         setOpenedSelect: (fieldName) =>
             dispatch({
                 type: ACTIONS.SET_OPENED_SELECT,

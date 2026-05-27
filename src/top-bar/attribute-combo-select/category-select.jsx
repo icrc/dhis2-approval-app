@@ -1,7 +1,8 @@
+import { useConfig } from '@dhis2/app-runtime'
 import i18n from '@dhis2/d2-i18n'
 import { Button, NoticeBox } from '@dhis2/ui'
 import PropTypes from 'prop-types'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useAppContext } from '../../app-context/use-app-context.js'
 import { cloneJSON } from '../../utils/array-utils.js'
 import {
@@ -25,7 +26,6 @@ HideButton.propTypes = {
 /**
  *
  * @param categoryCombo An object which has an array of category objects (JSON), each options (to be rendered in a menu).
- * @param orgUnit An object
  * @param selected {<attribute option combo>}
  * @param onChange A function to handle changes in the selected options.
  * @param onClose A function to close the menu.
@@ -33,11 +33,23 @@ HideButton.propTypes = {
  */
 export default function CategorySelect({
     categoryCombo,
+    period,
     onChange,
     onClose,
     selected, // attributeOptionCombo
 }) {
     const { metadata } = useAppContext()
+    const { systemInfo = {} } = useConfig()
+    const { calendar = 'gregory' } = systemInfo
+
+    const categories = useMemo(() => {
+        return getCategoriesByCategoryCombo({
+            categoryCombo,
+            metadata,
+            period,
+            calendar,
+        })
+    }, [categoryCombo, period, calendar])
 
     const mapSelectedCategories = () => {
         const categoryMap = {}
@@ -49,7 +61,6 @@ export default function CategorySelect({
         const categoryOptionIds = selected.categoryOptionIds
 
         // Go through "Categories" of catCombo to find "CategoryOption" we need
-        const categories = getCategoriesByCategoryCombo(categoryCombo, metadata)
         for (const category of categories) {
             const foundCatOptionId = category.categoryOptionIds.filter((id) =>
                 categoryOptionIds.includes(id)
@@ -86,8 +97,6 @@ export default function CategorySelect({
         onChange(selectedCatOptionCombo)
     }
 
-    const categories = getCategoriesByCategoryCombo(categoryCombo, metadata)
-
     // Check if there's exactly one category in the categories array and that category has at least one categoryOption
     if (categories.length === 1) {
         // Extracts the single category from the categories array
@@ -99,7 +108,7 @@ export default function CategorySelect({
 
         if (categoryOptions.length === 0) {
             return (
-                <>
+                <div className={css.attributeComboSelect}>
                     <NoticeBox
                         className={css.noOptionsBox}
                         error
@@ -112,28 +121,23 @@ export default function CategorySelect({
                     </NoticeBox>
 
                     <HideButton onClick={() => onClose()} />
-                </>
+                </div>
             )
         }
 
-        if (categoryOptions.length > 1) {
-            // Renders a MenuSelect for the single category with more than one category options
+        if (categoryOptions.length > 0) {
             return (
-                <>
-                    <SingleCategoryMenu
-                        category={category}
-                        selected={selectedItem}
-                        onChange={categoryItemOnChange}
-                    />
-
-                    <HideButton onClick={() => onClose()} />
-                </>
+                <SingleCategoryMenu
+                    category={category}
+                    selected={selectedItem}
+                    onChange={categoryItemOnChange}
+                />
             )
         }
     }
 
     return (
-        <div className={css.container}>
+        <div className={css.attributeComboSelect}>
             <MultipleCategorySelect
                 categories={categories}
                 selected={selectedItem}
@@ -152,7 +156,7 @@ CategorySelect.propTypes = {
         id: PropTypes.string.isRequired,
         isDefault: PropTypes.bool.isRequired,
     }).isRequired,
-
+    period: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     selected: PropTypes.object,

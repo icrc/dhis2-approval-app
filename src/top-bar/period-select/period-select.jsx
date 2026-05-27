@@ -43,7 +43,7 @@ const PeriodSelect = () => {
             dataTest="period-context-select"
             prefix={i18n.t('Period')}
             placeholder={i18n.t('Choose a period')}
-            value={value}
+            value={workflow?.dataSets?.length > 0 ? value : ''}
             open={open}
             disabled={!workflow?.id}
             onOpen={() => setOpenedSelect(PERIOD)}

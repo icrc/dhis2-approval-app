@@ -1,5 +1,5 @@
 import i18n from '@dhis2/d2-i18n'
-import { Menu, MenuItem } from '@dhis2/ui'
+import { Divider, Input, Menu, MenuItem } from '@dhis2/ui'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { useAppContext } from '../../app-context/use-app-context.js'
@@ -21,17 +21,6 @@ export default function SingleCategoryMenu({ category, selected, onChange }) {
 
     return (
         <>
-            {/* Search Input */}
-            <div className={css.inputContainer}>
-                <input
-                    type="text"
-                    placeholder={i18n.t('Type to filter options')}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className={css.searchInput}
-                />
-            </div>
-
             {filteredCategoryOptions.length === 0 ? (
                 <div className={css.empty}>
                     <span>
@@ -39,21 +28,50 @@ export default function SingleCategoryMenu({ category, selected, onChange }) {
                     </span>
                 </div>
             ) : (
-                <Menu className={css.menu}>
-                    {filteredCategoryOptions.map((catOption) => (
-                        <MenuItem
-                            key={`${category.id}-${catOption.id}`}
-                            className={css.bordered}
-                            active={selected[category.id] === catOption.id}
-                            onClick={() => onChange(category.id, catOption.id)}
-                            label={
-                                <span data-value={catOption.id}>
-                                    {catOption.displayName}
-                                </span>
-                            }
-                        />
-                    ))}
-                </Menu>
+                <>
+                    {/* Search Input - Only show this field when there are multiple options */}
+                    {filteredCategoryOptions.length >= 10 && (
+                        <>
+                            <div className={css.inputContainer}>
+                                <Input
+                                    dense
+                                    type="text"
+                                    dataTest={`${category.id}-filterinput`}
+                                    placeholder={i18n.t(
+                                        'Type to filter options'
+                                    )}
+                                    value={searchQuery}
+                                    initialFocus
+                                    onChange={({ value }) =>
+                                        setSearchQuery(value ?? '')
+                                    }
+                                />
+                            </div>
+
+                            <div className={css.dividerContainer}>
+                                <Divider dense />
+                            </div>
+                        </>
+                    )}
+
+                    <Menu className={css.menu}>
+                        {filteredCategoryOptions.map((catOption) => (
+                            <MenuItem
+                                key={`${category.id}-${catOption.id}`}
+                                className={css.bordered}
+                                active={selected[category.id] === catOption.id}
+                                onClick={() =>
+                                    onChange(category.id, catOption.id)
+                                }
+                                label={
+                                    <span data-value={catOption.id}>
+                                        {catOption.displayName}
+                                    </span>
+                                }
+                            />
+                        ))}
+                    </Menu>
+                </>
             )}
         </>
     )

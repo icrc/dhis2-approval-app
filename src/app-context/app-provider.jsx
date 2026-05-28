@@ -56,7 +56,12 @@ const metadataQuery = {
         params: ({ categoryComboIds }) => ({
             filter: [`categoryCombo.id:in:[${categoryComboIds.join(',')}]`],
             paging: false,
-            fields: ['id', 'categoryCombo[id]', 'categoryOptions[id]'],
+            fields: [
+                'id',
+                'displayName',
+                'categoryCombo[id]',
+                'categoryOptions[id]',
+            ],
         }),
     },
 }

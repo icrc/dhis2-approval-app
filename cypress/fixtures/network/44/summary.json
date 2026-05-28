@@ -1,0 +1,12 @@
+{
+    "count": 277,
+    "totalResponseSize": 258880,
+    "duplicates": 160,
+    "nonDeterministicResponses": 13,
+    "apiVersion": "44",
+    "fixtureFiles": [
+        "static_resources.json",
+        "users_can_approve,_accept,_unapprove,_and_unaccept_data.json",
+        "users_can_view_data_set_reports_for_data_sets_connected_to_a_workflow.json"
+    ]
+}

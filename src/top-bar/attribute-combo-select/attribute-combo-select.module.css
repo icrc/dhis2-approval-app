@@ -1,22 +1,9 @@
 .menu {
     height: 330px;
-    width: 350px;
+    width: 400px;
     overflow-y: auto;
 }
 
 .bordered {
     border-bottom: 1px solid var(--colors-grey400);
-}
-
-.attributeComboSelect {
-    margin-left: 8px;
-    margin-top: 8px;
-    padding-bottom: 5px;
-}
-
-.categorySelectWrapper {
-    border-top: 1px solid #e0e0e0;
-    padding: 8px;
-    background-color: #fafafa;
-    margin-top: 1rem;
 }

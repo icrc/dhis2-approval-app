@@ -1,24 +1,20 @@
 /* Center the container */
 .inputContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 4px 8px 8px 8px;
+    padding: var(--spacers-dp12) var(--spacers-dp12) 0;
+    flex-grow: 0;
 }
 
-/* Style the input */
-.searchInput {
-    width: 100%;
-    max-width: 400px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: none;
+.dividerContainer {
+    flex-shrink: 0;
 }
 
-.searchInput:focus {
-    border: 3px solid #5381ec !important;
-    outline: none;
+.menu {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.bordered {
+    border-bottom: 1px solid var(--colors-grey400);
 }
 
 .empty {

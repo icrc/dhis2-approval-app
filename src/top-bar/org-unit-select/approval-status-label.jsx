@@ -31,12 +31,13 @@ const renderIcon = (approvalStatus) => {
 }
 
 const ApprovalStatusLabel = ({ label, orgUnitId }) => {
-    const { workflow, period } = useSelectionContext()
+    const { workflow, period, attributeOptionCombo } = useSelectionContext()
     const { getApprovalStatus, fetchApprovalStatus } = useApprovalStatus()
     const approvalStatus = getApprovalStatus({
         workflowId: workflow.id,
         periodId: period.id,
         orgUnitId,
+        aocId: attributeOptionCombo?.id,
     })
 
     useEffect(() => {
@@ -44,6 +45,7 @@ const ApprovalStatusLabel = ({ label, orgUnitId }) => {
             workflowId: workflow.id,
             periodId: period.id,
             orgUnitId,
+            aocId: attributeOptionCombo?.id,
         })
     }, [])
 

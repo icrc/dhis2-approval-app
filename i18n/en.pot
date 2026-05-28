@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-05-20T02:12:18.107Z\n"
-"PO-Revision-Date: 2026-05-20T02:12:18.108Z\n"
+"POT-Creation-Date: 2026-05-28T11:41:19.275Z\n"
+"PO-Revision-Date: 2026-05-28T11:41:19.275Z\n"
 
 msgid "Not authorized"
 msgstr "Not authorized"
@@ -292,6 +292,9 @@ msgstr "Organisation Unit"
 
 msgid "Choose an organisation unit"
 msgstr "Choose an organisation unit"
+
+msgid "Search org units"
+msgstr "Search org units"
 
 msgid "Period"
 msgstr "Period"

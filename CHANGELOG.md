@@ -1,3 +1,10 @@
+# [100.2.0](https://github.com/dhis2/approval-app/compare/v100.1.6...v100.2.0) (2026-05-28)
+
+
+### Features
+
+* update context selection order ([3567fc9](https://github.com/dhis2/approval-app/commit/3567fc9619ca362a7070e1eea1c6e755548e1aad))
+
 ## [100.1.6](https://github.com/dhis2/approval-app/compare/v100.1.5...v100.1.6) (2026-05-13)
 
 

@@ -1,6 +1,6 @@
 import i18n from '@dhis2/d2-i18n'
 import { Menu } from '@dhis2/ui'
-import React from 'react'
+import React, { useState } from 'react'
 import { useAppContext } from '../../app-context/index.js'
 import { useSelectionContext } from '../../selection-context/index.js'
 import { ContextSelect } from '../context-select/index.js'
@@ -11,6 +11,8 @@ const WORKFLOW = 'WORKFLOW'
 
 const WorkflowSelect = () => {
     const { dataApprovalWorkflows } = useAppContext()
+    const [searchQuery, setSearchQuery] = useState('');
+
     const {
         workflow: selectedWorkflow,
         selectWorkflow,
@@ -19,6 +21,10 @@ const WorkflowSelect = () => {
     } = useSelectionContext()
     const open = openedSelect === WORKFLOW
     const value = selectedWorkflow?.displayName
+
+    const filteredWorkflows = dataApprovalWorkflows.filter((workflow) =>
+        workflow.displayName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <ContextSelect
@@ -37,18 +43,41 @@ const WorkflowSelect = () => {
                     )}
                 </div>
             ) : (
-                <Menu className={classes.menu}>
-                    {dataApprovalWorkflows.map((workflow) => (
-                        <WorkflowSelectOption
-                            key={workflow.id}
-                            id={workflow.id}
-                            name={workflow.displayName}
-                            periodType={workflow.periodType}
-                            active={workflow.id === selectedWorkflow?.id}
-                            onClick={() => selectWorkflow(workflow)}
+                <>
+                    {/* Search Input */}
+                    {filteredWorkflows.length >= 10 && <div className={classes.inputContainer}>
+                        <input
+                            type="text"
+                            placeholder={i18n.t('Search')}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className={classes.searchInput}
                         />
-                    ))}
-                </Menu>
+                    </div>}
+
+                    {filteredWorkflows.length === 0
+                        ? <div className={classes.empty}>
+                            <span>
+                                {i18n.t('No results found for {{searchQuery}}', {
+                                    searchQuery: searchQuery,
+                                    nsSeparator: '-:-'
+                                })}
+                            </span>
+                        </div>
+                        :
+                        <Menu className={classes.menu}>
+                            {filteredWorkflows.map((workflow) => (
+                                <WorkflowSelectOption
+                                    key={workflow.id}
+                                    id={workflow.id}
+                                    name={workflow.displayName}
+                                    periodType={workflow.periodType}
+                                    active={workflow.id === selectedWorkflow?.id}
+                                    onClick={() => selectWorkflow(workflow)}
+                                />
+                            ))}
+                        </Menu>}
+                </>
             )}
         </ContextSelect>
     )

@@ -18,3 +18,16 @@
     background: var(--colors-grey300) !important;
     color: var(--colors-grey900) !important;
 }
+
+.searchInputContainer {
+    padding: var(--spacers-dp8) var(--spacers-dp8) 0;
+    flex-grow: 0;
+}
+
+.searchInput {
+    margin: 8px 8px 4px 8px;
+}
+
+.dividerContainer {
+    flex-shrink: 0;
+}

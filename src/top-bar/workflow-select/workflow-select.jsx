@@ -1,5 +1,5 @@
 import i18n from '@dhis2/d2-i18n'
-import { Menu } from '@dhis2/ui'
+import { InputField, Menu } from '@dhis2/ui'
 import React, { useState } from 'react'
 import { useAppContext } from '../../app-context/index.js'
 import { useSelectionContext } from '../../selection-context/index.js'
@@ -45,13 +45,16 @@ const WorkflowSelect = () => {
             ) : (
                 <>
                     {/* Search Input */}
-                    {filteredWorkflows.length >= 10 && <div className={classes.inputContainer}>
-                        <input
+                    {dataApprovalWorkflows.length >= 10 && <div className={classes.inputContainer}>
+                        <InputField
+                            dense
                             type="text"
-                            placeholder={i18n.t('Search')}
+                            name="workflow-filterinput"
+                            placeholder={i18n.t('Search workflow')}
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className={classes.searchInput}
+                            initialFocus
+                            onChange={({ value }) => setSearchQuery(value ?? '')}
+                            className={classes.input}
                         />
                     </div>}
 

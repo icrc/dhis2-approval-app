@@ -98,7 +98,7 @@ const OrgUnitSelect = () => {
             popoverMaxWidth={400}
         >
             <div className={classes.popoverContainer}>
- 		<div className={classes.inputContainer}>
+ 		        <div className={classes.inputContainer}>
                     <InputField
                         dense
                         name="context-selection-org-unit-search"
